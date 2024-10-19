@@ -5,7 +5,7 @@ import jakarta.persistence.*;
 import java.time.LocalDateTime;
 @Entity
 public class Report {
-// - ( product voorraadniveaus, verkopen)
+// - ( product voorraadniveaus, verkopen, administratie voor de owner van de website)
 
 
     @Id

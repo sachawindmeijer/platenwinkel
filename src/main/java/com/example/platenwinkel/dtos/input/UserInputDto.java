@@ -10,6 +10,8 @@ public class UserInputDto {
     public Boolean enabled;
     public String apikey;
     public String email;
+    private String address;
+    private String dateOfBirth;
     public Set<Authority> authorities;
 
     public String getUsername() {
@@ -58,5 +60,13 @@ public class UserInputDto {
 
     public void setAuthorities(Set<Authority> authorities) {
         this.authorities = authorities;
+    }
+
+    public String getAddress() {
+        return address;
+    }
+
+    public String getDateOfBirth() {
+        return dateOfBirth;
     }
 }

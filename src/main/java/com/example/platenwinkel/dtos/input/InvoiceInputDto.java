@@ -9,7 +9,8 @@ public class InvoiceInputDto {
     public double VAT;
     public double shippingCost;
     public LocalDate date;
-    public Long customerId;
+    public Long userId;
+    public String userName;
     public List<Long> orderIds;
     public Double totalAmount;
 
@@ -17,8 +18,8 @@ public class InvoiceInputDto {
         return orderIds;
     }
 
-    public Long getCustomerId() {
-        return customerId;
+    public Long getUserId() {
+        return userId;
     }
 
     public String getInvoiceNumber() {
@@ -39,5 +40,9 @@ public class InvoiceInputDto {
 
     public Double getTotalAmount() {
         return totalAmount;
+    }
+
+    public String getUserName() {
+        return userName;
     }
 }

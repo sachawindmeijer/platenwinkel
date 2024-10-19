@@ -21,7 +21,6 @@ public class AuthenticationService {
             return false;
         }
 
-        // Vergelijk het opgegeven wachtwoord met het gehashte wachtwoord
         return passwordEncoder.matches(rawPassword, user.getPassword());
     }
 }

@@ -21,8 +21,8 @@ public class Invoice {
     private LocalDate date;
 
     @ManyToOne
-    @JoinColumn(name = "customer_id", nullable = false)
-    private Customer customer;
+    @JoinColumn(name = "user", nullable = false)
+    private User user;
 
     @OneToMany(mappedBy = "invoice", cascade = CascadeType.ALL)
     private List<Order> items;
@@ -33,10 +33,10 @@ public class Invoice {
     // Default constructor
     public Invoice(){}
 
-    public Invoice(String invoiceNumber, LocalDate date, Customer customer, Double totalAmount) {
+    public Invoice(String invoiceNumber, LocalDate date, User user, Double totalAmount) {
         this.invoiceNumber = invoiceNumber;
         this.date = date;
-        this.customer = customer;
+        this.user = user;
         this.totalAmount = totalAmount;
     }
     public void setId(Long id) {
@@ -79,12 +79,12 @@ public class Invoice {
         this.date = date;
     }
 
-    public Customer getCustomer() {
-        return customer;
+    public User getUser() {
+        return user;
     }
 
-    public void setCustomer(Customer customer) {
-        this.customer = customer;
+    public void setUser(User user) {
+        this.user = user;
     }
 
     public List<Order> getItems() {

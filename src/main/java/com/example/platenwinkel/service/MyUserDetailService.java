@@ -24,9 +24,8 @@ public class MyUserDetailService implements UserDetailsService {
 //    @Autowired
 //    private AuthorityService authorityService;
 
-        @Override
-        public UserDetails loadUserByUsername(String username) {
-            UserOutputDto userDto = userService.getUser(username);
+        public UserDetails loadUserByUsername(Long userid, String username) {
+            UserOutputDto userDto = userService.getUser(userid);
             if (userDto == null) {
                 throw new UsernameNotFoundException("User not found");
             }
@@ -42,5 +41,9 @@ public class MyUserDetailService implements UserDetailsService {
             return new org.springframework.security.core.userdetails.User(username, password, grantedAuthorities);
         }
 
+    @Override
+    public UserDetails loadUserByUsername(String username) throws UsernameNotFoundException {
+        return null;
     }
+}
 

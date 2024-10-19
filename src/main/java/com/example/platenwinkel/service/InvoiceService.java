@@ -3,28 +3,32 @@ package com.example.platenwinkel.service;
 import com.example.platenwinkel.dtos.input.InvoiceInputDto;
 import com.example.platenwinkel.dtos.mapper.InvoiceMapper;
 import com.example.platenwinkel.dtos.output.InvoiceOutputDto;
-import com.example.platenwinkel.models.Customer;
+
 import com.example.platenwinkel.models.Invoice;
 import com.example.platenwinkel.models.Order;
 
-import com.example.platenwinkel.repositories.CustomerRepository;
+
+import com.example.platenwinkel.models.User;
 import com.example.platenwinkel.repositories.InvoiceRepository;
 import com.example.platenwinkel.repositories.OrderRepository;
+import com.example.platenwinkel.repositories.UserRepository;
 import org.springframework.stereotype.Service;
 
+import java.util.ArrayList;
 import java.util.List;
 
+import java.util.Optional;
 import java.util.stream.Collectors;
 
 @Service
 public class InvoiceService {
     private final InvoiceRepository invoiceRepository;
-    private final CustomerRepository customerRepository;
+    private final UserRepository userRepository;
     private final OrderRepository orderRepository;
 
-    public InvoiceService(InvoiceRepository invoiceRepository, CustomerRepository customerRepository, OrderRepository orderRepository) {
+    public InvoiceService(InvoiceRepository invoiceRepository, UserRepository userRepository, OrderRepository orderRepository) {
         this.invoiceRepository = invoiceRepository;
-        this.customerRepository = customerRepository;
+        this.userRepository = userRepository;
         this.orderRepository = orderRepository;
     }
 
@@ -42,23 +46,34 @@ public class InvoiceService {
     }
 
     public InvoiceOutputDto createInvoice(InvoiceInputDto invoiceInputDto) {
-        // Haal de klant op
-        Customer customer = customerRepository.findById(invoiceInputDto.getCustomerId())
-                .orElseThrow(() -> new IllegalArgumentException("Customer not found"));
+        // Validate input
+//        validateInput(invoiceInputDto);
 
-        // Haal de bijbehorende orders op
-        List<Order> orders = invoiceInputDto.getOrderIds().stream()
-                .map(orderId -> orderRepository.findById(orderId)
-                        .orElseThrow(() -> new IllegalArgumentException("Order not found: " + orderId)))
-                .collect(Collectors.toList());
+        // Retrieve the user by username
+        Optional<User> userOptional = Optional.ofNullable(userRepository.findByUsername(invoiceInputDto.getUserName()));
+        if (!userOptional.isPresent()) {
+            throw new IllegalArgumentException("User not found: " + invoiceInputDto.getUserName());
+        }
+        User user = userOptional.get();
 
-        // Maak de Invoice aan en sla deze op
-        Invoice invoice = InvoiceMapper.fromInputDtoToModel(invoiceInputDto, customer, orders);
+        // Retrieve associated orders
+        List<Order> orders = new ArrayList<>();
+        for (Long orderId : invoiceInputDto.getOrderIds()) {
+            Optional<Order> orderOptional = orderRepository.findById(orderId);
+            if (!orderOptional.isPresent()) {
+                throw new IllegalArgumentException("Order not found: " + orderId);
+            }
+            orders.add(orderOptional.get());
+        }
+
+        // Create the invoice and save it
+        Invoice invoice = InvoiceMapper.fromInputDtoToModel(invoiceInputDto, user, orders);
         invoice = invoiceRepository.save(invoice);
 
-        // Retourneer de output DTO
+        // Return the output DTO
         return InvoiceMapper.fromInvoiceToOutputDto(invoice);
     }
+
 
     public Invoice saveInvoice(Invoice invoice) {
         return invoiceRepository.save(invoice);
@@ -69,7 +84,7 @@ public class InvoiceService {
                 .orElseThrow(() -> new IllegalArgumentException("Invoice not found"));
 
         // Haal de klant en orders opnieuw op om te updaten
-        Customer customer = customerRepository.findById(inputDto.getCustomerId())
+       User user = userRepository.findById(inputDto.getUserId())
                 .orElseThrow(() -> new IllegalArgumentException("Customer not found"));
         List<Order> orders = inputDto.getOrderIds().stream()
                 .map(orderId -> orderRepository.findById(orderId)
@@ -81,7 +96,7 @@ public class InvoiceService {
         existingInvoice.setVAT(inputDto.getVAT());
         existingInvoice.setShippingCost(inputDto.getShippingCost());
         existingInvoice.setDate(inputDto.getDate());
-        existingInvoice.setCustomer(customer);
+        existingInvoice.setUser(user);
         existingInvoice.setItems(orders);
         existingInvoice.setTotalAmount(inputDto.getTotalAmount());
 

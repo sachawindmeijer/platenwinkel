@@ -10,13 +10,14 @@ import java.util.stream.Collectors;
 public class OrderOutputDto {
 
     private Long id;
-    private Long customerId;
+    private Long userId;
     private LocalDate orderDate;
     private Double shippingCost;
     private int paymentStatus;
     private DeliveryStatus deliveryStatus;
     private String shippingAdress;
     private Map<Long, Integer> items; // Mapping product ID's to quantities
+
 
     public Long getId() {
         return id;
@@ -26,15 +27,13 @@ public class OrderOutputDto {
         this.id = id;
     }
 
-    public Long getCustomerId() {
-        return customerId;
+    public Long getUserId() {
+        return userId;
     }
-
-    public void setCustomerId(Long customerId) {
-        this.customerId = customerId;
+    public void setUserId(Long userId) {
+        this.userId = userId;
     }
-
-    public LocalDate getOrderDate() {
+        public LocalDate getOrderDate() {
         return orderDate;
     }
 

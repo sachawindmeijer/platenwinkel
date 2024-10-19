@@ -58,7 +58,7 @@ public class OrderService {
         Optional<Order> existingOrder = orderRepository.findById(id);
         if (existingOrder.isPresent()) {
             Order order = existingOrder.get();
-            order.setCustomer(updatedOrder.getCustomer());
+            order.setUser(updatedOrder.getUser());
             order.setOrderDate(updatedOrder.getOrderDate());
             order.setItems(updatedOrder.getItems());
             order.calculateAndSetShippingCost();

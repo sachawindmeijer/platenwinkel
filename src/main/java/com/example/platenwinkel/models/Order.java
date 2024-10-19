@@ -10,15 +10,15 @@ import java.util.HashMap;
 import java.util.Map;
 
 @Entity
-@Table(name = "customer_order")
+@Table(name = "user_order")
 public class Order {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     Long id;
 
     @ManyToOne
-    @JoinColumn(name = "customer_id", nullable = false)
-    private Customer customer;
+    @JoinColumn(name = "user_id", nullable = false)
+    private User user;
 
     @ManyToOne
     @JoinColumn(name = "invoice_id", nullable = false)
@@ -45,8 +45,8 @@ public class Order {
 
     public Order() {}
 
-    public Order(Customer customer, LocalDate orderDate, Double shippingCost, int paymentStatus, DeliveryStatus deliveryStatus, String shippingAdress, Map<LpProduct, Integer> items) {
-        this.customer = customer;
+    public Order(User user, LocalDate orderDate, Double shippingCost, int paymentStatus, DeliveryStatus deliveryStatus, String shippingAdress, Map<LpProduct, Integer> items) {
+        this.user = user;
         this.orderDate = orderDate;
         this.shippingCost = shippingCost;
         this.paymentStatus = paymentStatus;
@@ -84,12 +84,12 @@ public class Order {
         this.id = id;
     }
 
-    public Customer getCustomer() {
-        return customer;
+    public User getUser() {
+        return user;
     }
 
-    public void setCustomer(Customer customer) {
-        this.customer = customer;
+    public void setUser(User user) {
+        this.user = user;
     }
 
     public LocalDate getOrderDate() {
@@ -143,7 +143,7 @@ public class Order {
     @Override
     public String toString() {
         return "Order{" +
-                "customer=" + customer +
+                "user=" + user +
                 ", items=" + items +
                 ", orderDate=" + orderDate +
                 ", paymentStatus=" + (paymentStatus == 1 ? "Paid" : "Not Paid") +

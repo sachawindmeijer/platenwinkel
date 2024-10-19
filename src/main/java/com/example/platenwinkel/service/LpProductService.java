@@ -12,6 +12,7 @@ import org.springframework.web.bind.annotation.RequestBody;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Optional;
+import java.util.stream.Collectors;
 
 @Service
 public class LpProductService {
@@ -37,26 +38,18 @@ public class LpProductService {
         return lpDtoList;
     }
 
+
     public List<LpProductOutputDto> getAllLpProductsByArtist(String artist) {
-        List<LpProduct> lpProductlist = lpProductRepository.findAllLpProductsByArtistEqualsIgnoreCase(artist);
+        List<LpProduct> lpProductsByArtist = lpProductRepository.findAllLpProductsByArtistEqualsIgnoreCase(artist);
         List<LpProductOutputDto> lpDtoList = new ArrayList<>();
 
-        for (LpProduct lp : lpProductlist) {
+        for (LpProduct lp : lpProductsByArtist) {
             LpProductOutputDto dto = LpProductMapper.fromModelToOutputDto(lp);
             lpDtoList.add(dto);
         }
         return lpDtoList;
     }
 
-    public LpProductOutputDto getLpProductById(Long id) {
-        Optional<LpProduct> lpProductOptional = lpProductRepository.findById(id);
-        if (lpProductOptional.isPresent()) {
-            LpProduct lpProduct = lpProductOptional.get();
-            return LpProductMapper.fromModelToOutputDto(lpProduct);
-        } else {
-            throw new RecordNotFoundException("geen lpproduct gevonden");
-        }
-    }
 
     // In deze methode moeten we twee keer een vertaal methode toepassen.
     // De eerste keer van dto naar televsion, omdat de parameter een dto is.
@@ -65,6 +58,33 @@ public class LpProductService {
         LpProduct lpProduct = LpProductMapper.fromInputDtoToModel(lpProductInputDto);
         LpProduct savedProduct = lpProductRepository.save(lpProduct);
         return LpProductMapper.fromModelToOutputDto(savedProduct);
+    }
+    public LpProductOutputDto updateLpProduct(Long id, LpProductInputDto lpProductInputDto) {
+        // Retrieve the existing LP product
+        Optional<LpProduct> lpProductOptional = lpProductRepository.findById(id);
+
+        // Check if the LP product exists
+        if (lpProductOptional.isPresent()) {
+            LpProduct existingLpProduct = lpProductOptional.get();
+
+            // Update the fields of the existing LP product with new data from input DTO
+            existingLpProduct.setArtist(lpProductInputDto.getArtist());
+            existingLpProduct.setAlbum(lpProductInputDto.getAlbum());
+            existingLpProduct.setDescription(lpProductInputDto.getDescription());
+            existingLpProduct.setGenre(lpProductInputDto.getGenre());
+            existingLpProduct.setInStock(lpProductInputDto.getInStock());
+            existingLpProduct.setPriceInclVat(lpProductInputDto.getPriceInclVat());
+            existingLpProduct.setPriceEclVat(lpProductInputDto.getPriceEclVat());
+
+            // Save the updated LP product back to the repository
+            LpProduct updatedProduct = lpProductRepository.save(existingLpProduct);
+
+            // Map the updated LP product to the output DTO and return
+            return LpProductMapper.fromModelToOutputDto(updatedProduct);
+        } else {
+            // Throw an exception if the LP product was not found
+            throw new RecordNotFoundException("Geen LP product gevonden met ID: " + id);
+        }
     }
 
     // Dit is de vertaal methode van Television naar TelevisionDto

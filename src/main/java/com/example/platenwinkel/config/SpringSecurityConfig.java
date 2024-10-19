@@ -40,7 +40,7 @@ public class SpringSecurityConfig {
     }
 
     @Bean
-    protected SecurityFilterChain filter (HttpSecurity http) throws Exception {
+    protected SecurityFilterChain filter(HttpSecurity http) throws Exception {
 
         http
                 .csrf(csrf -> csrf.disable())
@@ -52,25 +52,33 @@ public class SpringSecurityConfig {
                                 // Public endpoints
                                 .requestMatchers("/authenticate").permitAll()
                                 .requestMatchers("/public/**").permitAll()
-
-                                // User endpoints
-                                .requestMatchers(HttpMethod.GET, "/lpproducts/**").permitAll() // LP Products can be viewed by anyone
-                                .requestMatchers(HttpMethod.GET, "/orders/**").authenticated() // Orders can be accessed only by authenticated users
-
-                                // Admin endpoints
+                                .requestMatchers(HttpMethod.GET, "/lpproducts").permitAll()
+                                .requestMatchers(HttpMethod.GET, "/lpproducts/**").permitAll()
                                 .requestMatchers(HttpMethod.POST, "/users").permitAll()
+
+                                .requestMatchers(HttpMethod.GET, "/authenticated").authenticated()
+                                .requestMatchers(HttpMethod.GET, "/orders/**").hasAnyRole("USER", "ADMIN")
+                                .requestMatchers(HttpMethod.GET, "/invoices").hasAnyRole("ADMIN", "USER") // USERS can get all invoices
+                                .requestMatchers(HttpMethod.GET, "/invoices/**").hasAnyRole("ADMIN", "USER")
+                                .requestMatchers(HttpMethod.POST, "/orders").hasRole("USER")
+
+
                                 .requestMatchers(HttpMethod.PUT, "/users/**").hasRole("ADMIN")
                                 .requestMatchers(HttpMethod.DELETE, "/users/**").hasRole("ADMIN")
+                                .requestMatchers(HttpMethod.GET, "/users").hasRole("ADMIN")
                                 .requestMatchers(HttpMethod.POST, "/lpproducts").hasRole("ADMIN")
                                 .requestMatchers(HttpMethod.PUT, "/lpproducts/**").hasRole("ADMIN")
                                 .requestMatchers(HttpMethod.DELETE, "/lpproducts/**").hasRole("ADMIN")
-                                .requestMatchers(HttpMethod.POST, "/orders").hasRole("ADMIN")
                                 .requestMatchers(HttpMethod.PUT, "/orders/**").hasRole("ADMIN")
                                 .requestMatchers(HttpMethod.DELETE, "/orders/**").hasRole("ADMIN")
                                 .requestMatchers(HttpMethod.POST, "/invoices").hasRole("ADMIN")
                                 .requestMatchers(HttpMethod.PUT, "/invoices/**").hasRole("ADMIN")
                                 .requestMatchers(HttpMethod.DELETE, "/invoices/**").hasRole("ADMIN")
+                                .requestMatchers(HttpMethod.POST, "/reports/**").hasRole("ADMIN")
+                                .requestMatchers(HttpMethod.PUT, "/reports/**").hasRole("ADMIN")
                                 .requestMatchers(HttpMethod.GET, "/reports").hasRole("ADMIN")
+                                .requestMatchers(HttpMethod.GET, "/reports/**").hasRole("ADMIN")
+                                .requestMatchers(HttpMethod.DELETE, "/reports/**").hasRole("ADMIN")
 
                                 // Default to deny all other requests
                                 .anyRequest().denyAll()
@@ -80,8 +88,6 @@ public class SpringSecurityConfig {
 
         return http.build();
     }
-
-
 
 
 //dit werkt als je uit eindelijk niet uitkomt hier boven

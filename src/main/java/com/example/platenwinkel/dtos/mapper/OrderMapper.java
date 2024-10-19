@@ -28,7 +28,7 @@ public class OrderMapper {
     public static OrderOutputDto fromOrderToOutputDto(Order order) {
         OrderOutputDto dto = new OrderOutputDto();
         dto.setId(order.getId());
-        dto.setCustomerId(order.getCustomer().getId());
+        dto.setUserId(order.getUser().getId());
         dto.setOrderDate(order.getOrderDate());
         dto.setShippingCost(order.getShippingCost());
         dto.setPaymentStatus(order.getPaymentStatus());

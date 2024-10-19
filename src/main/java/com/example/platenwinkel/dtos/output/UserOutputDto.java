@@ -2,15 +2,20 @@ package com.example.platenwinkel.dtos.output;
 
 import com.example.platenwinkel.models.Authority;
 
+import java.util.List;
 import java.util.Set;
 
 public class UserOutputDto {
+    private Long id;
 
     public String username;
     public String password;
     public Boolean enabled;
     public String apikey;
     public String email;
+    private String address;
+    private String dateOfBirth;
+    private List<OrderOutputDto> orders;
     public Set<Authority> authorities;
 
     public String getUsername() {
@@ -57,8 +62,39 @@ public class UserOutputDto {
         this.email = email;
     }
 
+    public String getAddress() {
+        return address;
+    }
+
+    public void setAddress(String address) {
+        this.address = address;
+    }
+
+    public String getDateOfBirth() {
+        return dateOfBirth;
+    }
+
+    public void setDateOfBirth(String dateOfBirth) {
+        this.dateOfBirth = dateOfBirth;
+    }
+
+    public List<OrderOutputDto> getOrders() {
+        return orders;
+    }
+
+    public void setOrders(List<OrderOutputDto> orders) {
+        this.orders = orders;
+    }
+
     public void setAuthorities(Set<Authority> authorities) {
         this.authorities = authorities;
     }
-}
 
+    public Long getId() {
+        return id;
+    }
+
+    public void setId(Long id) {
+        this.id = id;
+    }
+}

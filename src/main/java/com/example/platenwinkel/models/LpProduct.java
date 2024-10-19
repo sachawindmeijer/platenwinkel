@@ -18,19 +18,19 @@ import java.time.LocalDate;
 //
 //
 @Entity//geeft aan dat de class die volgt een entiteit is in de database
-@Table(name = "LpProduct")
+@Table(name = "Lp_Product")
 public class LpProduct {
-    //  @Id  //  Een entiteit moet een primary key bevatten(id)
 
-    //  @GeneratedValue  // GeneratedValue betekend dat je deze waarde niet zelf hoeft in te vullen, dit doet Spring Boot voor jou bij het opslaan in de database.
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
-    Long id;
+    private Long id;
 
     private String artist;
     private String album;
     private String description;
     private LocalDate releaseDate;
+
+    @Enumerated(EnumType.STRING)
     private Genre genre;
     private int inStock; // dit aanpassen in het klassen diagram
 
